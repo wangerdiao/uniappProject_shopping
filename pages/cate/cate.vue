@@ -1,5 +1,6 @@
 <template>
   <view>
+    <my-search @goSearch="goSearch"></my-search>
     <view class="scrollContainer">
       <!-- 左侧滑动区 -->
       <scroll-view scroll-y="true" class="leftScroll" :style="{height:wh+'px'}">
@@ -41,7 +42,7 @@
     onLoad() {
       //获取当前屏幕可以高度
       const syncInfo = uni.getSystemInfoSync()
-      this.wh = syncInfo.windowHeight
+      this.wh = syncInfo.windowHeight - 50
       //获取分类的数据
       this.getCateList()
     },
@@ -69,6 +70,12 @@
         uni.navigateTo({
           url:'/subpkg/goods_list/goods_list?cid='+item.cat_id
         })
+      },
+        //点击搜索组件的回调
+      goSearch() {
+          uni.navigateTo({
+            url:'/subpkg/search/search'
+          })
       }
     }
   }
@@ -77,6 +84,7 @@
 <style lang="scss">
 .scrollContainer {
   display: flex;
+  background-color: #fff;
   .leftScroll {
     width: 120px;
     //左侧滚动区域

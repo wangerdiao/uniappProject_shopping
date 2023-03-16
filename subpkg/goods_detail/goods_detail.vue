@@ -33,7 +33,16 @@
 </template>
 
 <script>
+  import {mapState,mapMutations,mapGetters} from 'vuex'
   export default {
+    computed:{
+      ...mapGetters('m_cart',['getTotal'])
+    },
+    watch:{
+      getTotal(newValue) {
+        this.setCartInfo(newValue)
+      }
+    },
     data() {
       return {
         goodsDetail:{},//商品详情数据
@@ -44,7 +53,7 @@
         },{
           icon:'cart',
           text:'购物车',
-          info:2
+          info:0
         }],
         //右侧按钮配置对象
         buttonGroup:[
@@ -62,11 +71,12 @@
       };
     },
     onLoad(options) {
-      console.log(options);
       const goods_id = options.goods_id
       this.getGoodsDetail(goods_id)
+      this.setCartInfo(this.getTotal)
     },
     methods:{
+      ...mapMutations('m_cart',['addToCart']), //映射store中的方法
       async getGoodsDetail(goods_id) {
         const {data} = await uni.$http.get('/goods/detail',{goods_id})
         if(data.meta.status == 200) {
@@ -85,7 +95,6 @@
       },
       //导航组件click事件
       onClick(e) {
-        console.log(e);
         if(e.content.text === '购物车') {
           console.log(1);
           uni.switchTab({
@@ -94,8 +103,26 @@
         }
       },
       //导航组件按钮事件@buttonClick
-      buttonClick() {
-        
+      buttonClick(e) {
+        if(e.content.text === '加入购物车') {
+          const goods = {
+            goods_id:this.goodsDetail.goods_id,
+            goods_name:this.goodsDetail.goods_name,
+            goods_price:this.goodsDetail.goods_price,
+            goods_count:1,
+            goods_small_logo:this.goodsDetail.goods_small_logo,
+            goods_state:this.goodsDetail.goods_state,
+            goods_isChacked:true
+          }
+          this.addToCart(goods)
+        }
+      },
+      //修改购物车数量的回调
+      setCartInfo(newValue) {
+        const findResult = this.options.find(x => x.text==='购物车')
+        if(findResult) {
+          findResult.info = newValue
+        }
       }
     }
   }
@@ -104,6 +131,7 @@
 <style lang="scss">
   .container{
     background-color: #fff;
+    padding-bottom: 50px;
   }
 swiper {
   height: 750rpx;
@@ -144,8 +172,8 @@ swiper {
   }
 }
 .goods_nav {
-  position: sticky;
+  width: 100%;
+  position: fixed;
   bottom: 0;
-  z-index: 999;
 }
 </style>

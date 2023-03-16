@@ -53,9 +53,11 @@
         "appid" : "wx54e93c515aa5b1b6",
         "setting" : {
             "urlCheck" : false,
-            "es6" : true
+            "es6" : true,
+            "postcss" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "requiredPrivateInfos": [       "chooseAddress"     ]
     },
     "vueVersion" : "2"
 }

@@ -29,7 +29,9 @@
 </template>
 
 <script>
+  import  badgeMix from '@/mixins/tarbar-badge.js'
   export default {
+    mixins:[badgeMix],
     data() {
       return {
         wh:0,//当前设备可用高度
